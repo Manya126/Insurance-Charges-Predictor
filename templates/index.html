@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Insurance Charges Predictor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-orange-50 flex justify-center items-center min-h-screen">
+  <div class="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-4xl">
+    <h1 class="text-4xl font-extrabold text-center mb-8 text-orange-700">Insurance Charges Predictor</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div>
+        <label class="block mb-2 text-orange-700 font-semibold">Age</label>
+        <input type="number" id="age" class="w-full p-3 border-2 border-orange-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400" min="18" max="100" value="30">
+
+        <label class="block mt-6 mb-2 text-orange-700 font-semibold">Sex</label>
+        <select id="sex" class="w-full p-3 border-2 border-orange-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400">
+          <option>Male</option>
+          <option>Female</option>
+        </select>
+
+        <label class="block mt-6 mb-2 text-orange-700 font-semibold">BMI</label>
+        <input type="number" id="bmi" class="w-full p-3 border-2 border-orange-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400" min="10" max="50" step="0.1" value="25">
+
+        <label class="block mt-6 mb-2 text-orange-700 font-semibold">Children</label>
+        <input type="number" id="children" class="w-full p-3 border-2 border-orange-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400" min="0" max="10" value="0">
+      </div>
+
+      <div>
+        <label class="block mb-2 text-orange-700 font-semibold">Smoker</label>
+        <select id="smoker" class="w-full p-3 border-2 border-orange-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400">
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+
+        <label class="block mt-6 mb-2 text-orange-700 font-semibold">Region</label>
+        <select id="region" class="w-full p-3 border-2 border-orange-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400">
+          <option>Northwest</option>
+          <option>Northeast</option>
+          <option>Southeast</option>
+          <option>Southwest</option>
+        </select>
+
+        <button onclick="predictCharges()" class="w-full bg-orange-600 text-white py-3 rounded-lg mt-8 text-lg font-semibold hover:bg-orange-700 transition duration-300">
+          Predict Charges
+        </button>
+
+        <p id="result" class="text-center font-bold mt-8 text-2xl text-green-700"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function predictCharges() {
+      const data = {
+        age: document.getElementById("age").value,
+        sex: document.getElementById("sex").value,
+        bmi: document.getElementById("bmi").value,
+        children: document.getElementById("children").value,
+        smoker: document.getElementById("smoker").value,
+        region: document.getElementById("region").value
+      };
+
+      const response = await fetch("/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+      document.getElementById("result").innerText = `Predicted Charges: $${result.predicted_charges}`;
+    }
+  </script>
+</body>
+</html>
